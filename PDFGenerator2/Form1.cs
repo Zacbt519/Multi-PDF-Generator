@@ -56,47 +56,63 @@ namespace PDFGenerator2
 
         private void doc_PrintPage(object sender, PrintPageEventArgs e)
         {
-            Graphics gf = e.Graphics;
-            string toWrite = File.ReadAllText(FilePath);
-            
+            try
+            {
+                Graphics gf = e.Graphics;
+                string toWrite = File.ReadAllText(FilePath);
 
-            float xPos = e.MarginBounds.Left;
-            float yPos = e.MarginBounds.Top;
-            Font font = new Font("Consolas", 10);
-            float lineHeight = font.GetHeight(e.Graphics);
 
-            int charactersOnPage = 0;
-            int linesPerPage = 0;
+                float xPos = e.MarginBounds.Left;
+                float yPos = e.MarginBounds.Top;
+                Font font = new Font("Consolas", 10);
+                float lineHeight = font.GetHeight(e.Graphics);
+
+                int charactersOnPage = 0;
+                int linesPerPage = 0;
+
+                gf.MeasureString(toWrite, this.Font, e.MarginBounds.Size, StringFormat.GenericTypographic, out charactersOnPage, out linesPerPage);
+                gf.DrawString(toWrite, this.Font, Brushes.Black, e.MarginBounds, StringFormat.GenericTypographic);
+                toWrite = toWrite.Substring(charactersOnPage);
+                e.HasMorePages = (toWrite.Length > 0);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             
-            gf.MeasureString(toWrite, this.Font, e.MarginBounds.Size, StringFormat.GenericTypographic, out charactersOnPage, out linesPerPage);
-            gf.DrawString(toWrite, this.Font, Brushes.Black, e.MarginBounds, StringFormat.GenericTypographic);
-            toWrite = toWrite.Substring(charactersOnPage);
-            e.HasMorePages = (toWrite.Length > 0);
         }
        
 
 
         private void btnSelectFiles_Click(object sender, EventArgs e)
         {
-            OpenFileDialog select = new OpenFileDialog();
-            select.Title = "Select Files to save as PDF";
-            select.Multiselect = true;
-            select.ShowDialog();
-
-            foreach(string f in select.FileNames)
+            try
             {
-                PrintFile file = new PrintFile()
-                {
-                    FilePath = f,
-                    FileName = Path.GetFileNameWithoutExtension(f)
-                };
+                OpenFileDialog select = new OpenFileDialog();
+                select.Title = "Select Files to save as PDF";
+                select.Multiselect = true;
+                select.ShowDialog();
 
-                files.Add(file);
+                foreach (string f in select.FileNames)
+                {
+                    PrintFile file = new PrintFile()
+                    {
+                        FilePath = f,
+                        FileName = Path.GetFileNameWithoutExtension(f)
+                    };
+
+                    files.Add(file);
+                }
+                lstFiles.SelectedIndex = -1;
+                lstFiles.DisplayMember = "FileName";
+                lstFiles.ValueMember = "FilePath";
+                lstFiles.DataSource = files;
             }
-            lstFiles.SelectedIndex = -1;
-            lstFiles.DisplayMember = "FileName";
-            lstFiles.ValueMember = "FilePath";
-            lstFiles.DataSource = files;
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
         }
 
         
@@ -108,46 +124,90 @@ namespace PDFGenerator2
 
         private void btnSaveFileName_Click(object sender, EventArgs e)
         {
-            if(lstFiles.SelectedValue.ToString() == null || lstFiles.SelectedValue.ToString() == string.Empty)
+
+            try
             {
-                MessageBox.Show("Please select a file to update");
-            }
-            else
-            {
-                foreach(PrintFile f in files)
+                if (lstFiles.SelectedValue.ToString() == null || lstFiles.SelectedValue.ToString() == string.Empty)
                 {
-                    if(f.FilePath == lstFiles.SelectedValue.ToString())
+                    MessageBox.Show("Please select a file to update");
+                }
+                else
+                {
+                    foreach (PrintFile f in files)
                     {
-                        f.NewFileName = txtFileName.Text;
+                        if (f.FilePath == lstFiles.SelectedValue.ToString())
+                        {
+                            f.NewFileName = txtFileName.Text;
+                        }
                     }
                 }
+                txtFileName.ResetText();
+                pnlNaming.Visible = false;
             }
-            txtFileName.ResetText();
-            pnlNaming.Visible = false;
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
         }
 
         private void btnSelectSave_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog save = new FolderBrowserDialog();
-
-
-            if(save.ShowDialog() == DialogResult.OK)
+            try
             {
-                saveLocation = save.SelectedPath;
+                FolderBrowserDialog save = new FolderBrowserDialog();
+
+
+                if (save.ShowDialog() == DialogResult.OK)
+                {
+                    saveLocation = save.SelectedPath;
+                }
             }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
         }
 
         private void btnPrintToPDF_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(saveLocation))
+            try
             {
-                FolderBrowserDialog save = new FolderBrowserDialog();
-
-                if(save.ShowDialog() == DialogResult.OK)
+                if (string.IsNullOrEmpty(saveLocation))
                 {
-                    saveLocation = save.SelectedPath;
+                    FolderBrowserDialog save = new FolderBrowserDialog();
 
-                    if(files.Count == 0)
+                    if (save.ShowDialog() == DialogResult.OK)
+                    {
+                        saveLocation = save.SelectedPath;
+
+                        if (files.Count == 0)
+                        {
+                            MessageBox.Show("You must select files before you can print them to PDF!");
+                        }
+                        else
+                        {
+                            foreach (PrintFile f in files)
+                            {
+                                if (f.NewFileName == string.Empty || f.NewFileName == null)
+                                {
+                                    FilePath = f.FilePath;
+                                    SendToPrinter(f.FileName, saveLocation);
+                                }
+                                else
+                                {
+                                    SendToPrinter(f.NewFileName, saveLocation);
+                                }
+                            }
+                        }
+
+
+                    }
+                }
+                else
+                {
+                    if (files.Count == 0)
                     {
                         MessageBox.Show("You must select files before you can print them to PDF!");
                     }
@@ -157,7 +217,6 @@ namespace PDFGenerator2
                         {
                             if (f.NewFileName == string.Empty || f.NewFileName == null)
                             {
-                                FilePath = f.FilePath;
                                 SendToPrinter(f.FileName, saveLocation);
                             }
                             else
@@ -166,33 +225,15 @@ namespace PDFGenerator2
                             }
                         }
                     }
-
-                    
                 }
+
+                files.Clear();
             }
-            else
+            catch(Exception ex)
             {
-                if (files.Count == 0)
-                {
-                    MessageBox.Show("You must select files before you can print them to PDF!");
-                }
-                else
-                {
-                    foreach (PrintFile f in files)
-                    {
-                        if (f.NewFileName == string.Empty || f.NewFileName == null)
-                        {
-                            SendToPrinter(f.FileName, saveLocation);
-                        }
-                        else
-                        {
-                            SendToPrinter(f.NewFileName, saveLocation);
-                        }
-                    }
-                }
+                MessageBox.Show(ex.Message);
             }
-
-            files.Clear();
+            
         }
     }
 }
