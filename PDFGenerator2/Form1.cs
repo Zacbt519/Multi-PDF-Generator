@@ -22,7 +22,8 @@ namespace PDFGenerator2
         }
         List<PrintFile> files;
         private string saveLocation;
-        private string FilePath;
+        public string filePath;
+        private string toWrite;
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -45,6 +46,7 @@ namespace PDFGenerator2
 
                 doc.OriginAtMargins = false;
                 doc.PrintPage += doc_PrintPage;
+                toWrite = File.ReadAllText(filePath);
                 doc.Print();
             }
             catch(Exception ex)
@@ -54,12 +56,14 @@ namespace PDFGenerator2
            
         }
 
+        int charactersOnPage = 0;
+        int linesPerPage = 0;
         private void doc_PrintPage(object sender, PrintPageEventArgs e)
         {
             try
             {
                 Graphics gf = e.Graphics;
-                string toWrite = File.ReadAllText(FilePath);
+                
 
 
                 float xPos = e.MarginBounds.Left;
@@ -67,8 +71,7 @@ namespace PDFGenerator2
                 Font font = new Font("Consolas", 10);
                 float lineHeight = font.GetHeight(e.Graphics);
 
-                int charactersOnPage = 0;
-                int linesPerPage = 0;
+                
 
                 gf.MeasureString(toWrite, this.Font, e.MarginBounds.Size, StringFormat.GenericTypographic, out charactersOnPage, out linesPerPage);
                 gf.DrawString(toWrite, this.Font, Brushes.Black, e.MarginBounds, StringFormat.GenericTypographic);
@@ -103,6 +106,7 @@ namespace PDFGenerator2
 
                     files.Add(file);
                 }
+                lstFiles.DataSource = null;
                 lstFiles.SelectedIndex = -1;
                 lstFiles.DisplayMember = "FileName";
                 lstFiles.ValueMember = "FilePath";
@@ -192,7 +196,7 @@ namespace PDFGenerator2
                             {
                                 if (f.NewFileName == string.Empty || f.NewFileName == null)
                                 {
-                                    FilePath = f.FilePath;
+                                    filePath = f.FilePath;
                                     SendToPrinter(f.FileName, saveLocation);
                                 }
                                 else
