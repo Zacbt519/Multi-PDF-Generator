@@ -36,6 +36,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnSelectSave = new System.Windows.Forms.Button();
             this.btnPrintToPDF = new System.Windows.Forms.Button();
+            this.lblPath = new System.Windows.Forms.Label();
             this.pnlNaming.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,9 +54,9 @@
             // 
             this.lstFiles.FormattingEnabled = true;
             this.lstFiles.ItemHeight = 16;
-            this.lstFiles.Location = new System.Drawing.Point(819, 9);
+            this.lstFiles.Location = new System.Drawing.Point(512, 34);
             this.lstFiles.Name = "lstFiles";
-            this.lstFiles.Size = new System.Drawing.Size(280, 580);
+            this.lstFiles.Size = new System.Drawing.Size(280, 228);
             this.lstFiles.TabIndex = 1;
             this.lstFiles.SelectedValueChanged += new System.EventHandler(this.lstFiles_SelectedValueChanged);
             // 
@@ -64,11 +65,10 @@
             this.pnlNaming.Controls.Add(this.btnSaveFileName);
             this.pnlNaming.Controls.Add(this.txtFileName);
             this.pnlNaming.Controls.Add(this.label1);
-            this.pnlNaming.Location = new System.Drawing.Point(494, 9);
+            this.pnlNaming.Location = new System.Drawing.Point(187, 34);
             this.pnlNaming.Name = "pnlNaming";
             this.pnlNaming.Size = new System.Drawing.Size(319, 153);
             this.pnlNaming.TabIndex = 2;
-            this.pnlNaming.Visible = false;
             // 
             // btnSaveFileName
             // 
@@ -116,11 +116,22 @@
             this.btnPrintToPDF.UseVisualStyleBackColor = true;
             this.btnPrintToPDF.Click += new System.EventHandler(this.btnPrintToPDF_Click);
             // 
+            // lblPath
+            // 
+            this.lblPath.AutoSize = true;
+            this.lblPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPath.Location = new System.Drawing.Point(12, 284);
+            this.lblPath.Name = "lblPath";
+            this.lblPath.Size = new System.Drawing.Size(0, 29);
+            this.lblPath.TabIndex = 5;
+            // 
             // Form1
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1111, 601);
+            this.ClientSize = new System.Drawing.Size(810, 339);
+            this.Controls.Add(this.lblPath);
             this.Controls.Add(this.btnPrintToPDF);
             this.Controls.Add(this.btnSelectSave);
             this.Controls.Add(this.pnlNaming);
@@ -128,11 +139,14 @@
             this.Controls.Add(this.btnSelectFiles);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "Multi PDF Generator";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.pnlNaming.ResumeLayout(false);
             this.pnlNaming.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -146,6 +160,7 @@
         private System.Windows.Forms.Button btnSelectSave;
         private System.Windows.Forms.Button btnSaveFileName;
         private System.Windows.Forms.Button btnPrintToPDF;
+        private System.Windows.Forms.Label lblPath;
     }
 }
 

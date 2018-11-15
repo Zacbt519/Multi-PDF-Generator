@@ -30,6 +30,14 @@ namespace PDFGenerator2
             files = new List<PrintFile>();
         }
 
+        private void ResetListbox()
+        {
+            lstFiles.DataSource = null;
+            lstFiles.DisplayMember = "FileName";
+            lstFiles.ValueMember = "FilePath";
+            lstFiles.DataSource = files;
+        }
+
         private void SendToPrinter(string file, string directory)
         {
             try
@@ -108,11 +116,7 @@ namespace PDFGenerator2
 
                     files.Add(file);
                 }
-                lstFiles.DataSource = null;
-                lstFiles.SelectedIndex = -1;
-                lstFiles.DisplayMember = "FileName";
-                lstFiles.ValueMember = "FilePath";
-                lstFiles.DataSource = files;
+                ResetListbox();
             }
             catch(Exception ex)
             {
@@ -125,7 +129,7 @@ namespace PDFGenerator2
 
         private void lstFiles_SelectedValueChanged(object sender, EventArgs e)
         {
-            pnlNaming.Visible = true;
+            
         }
 
         private void btnSaveFileName_Click(object sender, EventArgs e)
@@ -147,12 +151,8 @@ namespace PDFGenerator2
                         }
                     }
                 }
-                lstFiles.DataSource = null;
-                lstFiles.DisplayMember = "FileName";
-                lstFiles.ValueMember = "FilePath";
-                lstFiles.DataSource = files;
+                ResetListbox();
                 txtFileName.ResetText();
-                pnlNaming.Visible = false;
             }
             catch(Exception ex)
             {
@@ -171,6 +171,7 @@ namespace PDFGenerator2
                 if (save.ShowDialog() == DialogResult.OK)
                 {
                     saveLocation = save.SelectedPath;
+                    lblPath.Text = "Saved File Path: " + saveLocation;
                 }
             }
             catch(Exception ex)
@@ -191,6 +192,7 @@ namespace PDFGenerator2
                     if (save.ShowDialog() == DialogResult.OK)
                     {
                         saveLocation = save.SelectedPath;
+                        lblPath.Text = "Saved File Path: " + saveLocation;
 
                         if (files.Count == 0)
                         {
@@ -201,13 +203,15 @@ namespace PDFGenerator2
                             foreach (PrintFile f in files)
                             {
                                filePath = f.FilePath;
-                               SendToPrinter(f.FileName, saveLocation); 
+                               SendToPrinter(f.FileName, saveLocation);
+                               f.IsPrinted = true;
                             }
                         }
                     }
                 }
                 else
                 {
+                    lblPath.Text = "Saved File Path: " + saveLocation;
                     if (files.Count == 0)
                     {
                         MessageBox.Show("You must select files before you can print them to PDF!");
@@ -216,18 +220,50 @@ namespace PDFGenerator2
                     {
                         foreach (PrintFile f in files)
                         {
-                            SendToPrinter(f.FileName, saveLocation);  
+                            SendToPrinter(f.FileName, saveLocation);
+                            f.IsPrinted = true;
                         }
                     }
                 }
 
+
+
                 files.Clear();
+
+                ResetListbox();
             }
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
             
+        }
+
+        private void Form1_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.All;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void Form1_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] dropFiles = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            for(int i = 0; i < dropFiles.Length; i++)
+            {
+                PrintFile p = new PrintFile();
+                p.FileName = Path.GetFileNameWithoutExtension(dropFiles[i]);
+                p.FilePath = dropFiles[i];
+
+                files.Add(p);
+            }
+
+            ResetListbox();
         }
     }
 }
