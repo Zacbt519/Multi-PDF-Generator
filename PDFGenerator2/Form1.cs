@@ -48,6 +48,8 @@ namespace PDFGenerator2
                 doc.PrintPage += doc_PrintPage;
                 toWrite = File.ReadAllText(filePath);
                 doc.Print();
+
+                
             }
             catch(Exception ex)
             {
@@ -141,10 +143,14 @@ namespace PDFGenerator2
                     {
                         if (f.FilePath == lstFiles.SelectedValue.ToString())
                         {
-                            f.NewFileName = txtFileName.Text;
+                            f.FileName = txtFileName.Text;
                         }
                     }
                 }
+                lstFiles.DataSource = null;
+                lstFiles.DisplayMember = "FileName";
+                lstFiles.ValueMember = "FilePath";
+                lstFiles.DataSource = files;
                 txtFileName.ResetText();
                 pnlNaming.Visible = false;
             }
@@ -194,19 +200,10 @@ namespace PDFGenerator2
                         {
                             foreach (PrintFile f in files)
                             {
-                                if (f.NewFileName == string.Empty || f.NewFileName == null)
-                                {
-                                    filePath = f.FilePath;
-                                    SendToPrinter(f.FileName, saveLocation);
-                                }
-                                else
-                                {
-                                    SendToPrinter(f.NewFileName, saveLocation);
-                                }
+                               filePath = f.FilePath;
+                               SendToPrinter(f.FileName, saveLocation); 
                             }
                         }
-
-
                     }
                 }
                 else
@@ -219,14 +216,7 @@ namespace PDFGenerator2
                     {
                         foreach (PrintFile f in files)
                         {
-                            if (f.NewFileName == string.Empty || f.NewFileName == null)
-                            {
-                                SendToPrinter(f.FileName, saveLocation);
-                            }
-                            else
-                            {
-                                SendToPrinter(f.NewFileName, saveLocation);
-                            }
+                            SendToPrinter(f.FileName, saveLocation);  
                         }
                     }
                 }

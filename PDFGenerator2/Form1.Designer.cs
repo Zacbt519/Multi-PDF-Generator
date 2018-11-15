@@ -31,10 +31,10 @@
             this.btnSelectFiles = new System.Windows.Forms.Button();
             this.lstFiles = new System.Windows.Forms.ListBox();
             this.pnlNaming = new System.Windows.Forms.Panel();
+            this.btnSaveFileName = new System.Windows.Forms.Button();
             this.txtFileName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnSelectSave = new System.Windows.Forms.Button();
-            this.btnSaveFileName = new System.Windows.Forms.Button();
             this.btnPrintToPDF = new System.Windows.Forms.Button();
             this.pnlNaming.SuspendLayout();
             this.SuspendLayout();
@@ -70,6 +70,16 @@
             this.pnlNaming.TabIndex = 2;
             this.pnlNaming.Visible = false;
             // 
+            // btnSaveFileName
+            // 
+            this.btnSaveFileName.Location = new System.Drawing.Point(4, 108);
+            this.btnSaveFileName.Name = "btnSaveFileName";
+            this.btnSaveFileName.Size = new System.Drawing.Size(312, 42);
+            this.btnSaveFileName.TabIndex = 2;
+            this.btnSaveFileName.Text = "Save File Name";
+            this.btnSaveFileName.UseVisualStyleBackColor = true;
+            this.btnSaveFileName.Click += new System.EventHandler(this.btnSaveFileName_Click);
+            // 
             // txtFileName
             // 
             this.txtFileName.Location = new System.Drawing.Point(7, 25);
@@ -96,16 +106,6 @@
             this.btnSelectSave.UseVisualStyleBackColor = true;
             this.btnSelectSave.Click += new System.EventHandler(this.btnSelectSave_Click);
             // 
-            // btnSaveFileName
-            // 
-            this.btnSaveFileName.Location = new System.Drawing.Point(4, 108);
-            this.btnSaveFileName.Name = "btnSaveFileName";
-            this.btnSaveFileName.Size = new System.Drawing.Size(312, 42);
-            this.btnSaveFileName.TabIndex = 2;
-            this.btnSaveFileName.Text = "Save File Name";
-            this.btnSaveFileName.UseVisualStyleBackColor = true;
-            this.btnSaveFileName.Click += new System.EventHandler(this.btnSaveFileName_Click);
-            // 
             // btnPrintToPDF
             // 
             this.btnPrintToPDF.Location = new System.Drawing.Point(12, 204);
@@ -127,6 +127,7 @@
             this.Controls.Add(this.lstFiles);
             this.Controls.Add(this.btnSelectFiles);
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.pnlNaming.ResumeLayout(false);
