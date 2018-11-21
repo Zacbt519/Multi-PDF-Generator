@@ -220,6 +220,7 @@ namespace PDFGenerator2
                     {
                         foreach (PrintFile f in files)
                         {
+                            filePath = f.FilePath;
                             SendToPrinter(f.FileName, saveLocation);
                             f.IsPrinted = true;
                         }
