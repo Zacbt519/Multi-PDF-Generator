@@ -20,16 +20,27 @@ namespace PDFGenerator2
         {
             InitializeComponent();
         }
-        List<PrintFile> files;
-        private string saveLocation;
-        public string filePath;
-        private string toWrite;
 
+        List<PrintFile> files; //List of files
+        private string saveLocation; //Location to save PDF's   
+        public string filePath; // The files path
+        private string toWrite; // Content of the file being written
+        private int charactersOnPage = 0; //Number of Characters on a page
+        private int linesPerPage = 0; //Number of lines on a page
+
+        /// <summary>
+        /// Form Load Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
             files = new List<PrintFile>();
         }
 
+        /// <summary>
+        /// Resets listbox to default state
+        /// </summary>
         private void ResetListbox()
         {
             lstFiles.DataSource = null;
@@ -38,6 +49,11 @@ namespace PDFGenerator2
             lstFiles.DataSource = files;
         }
 
+        /// <summary>
+        /// Sends File to PDF printer to be printed
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="directory"></param>
         private void SendToPrinter(string file, string directory)
         {
             try
@@ -66,23 +82,20 @@ namespace PDFGenerator2
            
         }
 
-        int charactersOnPage = 0;
-        int linesPerPage = 0;
+        /// <summary>
+        /// Covert the contents of the file into graphics that can be printed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void doc_PrintPage(object sender, PrintPageEventArgs e)
         {
             try
             {
                 Graphics gf = e.Graphics;
-                
-
-
                 float xPos = e.MarginBounds.Left;
                 float yPos = e.MarginBounds.Top;
                 Font font = new Font("Consolas", 10);
                 float lineHeight = font.GetHeight(e.Graphics);
-
-                
-
                 gf.MeasureString(toWrite, this.Font, e.MarginBounds.Size, StringFormat.GenericTypographic, out charactersOnPage, out linesPerPage);
                 gf.DrawString(toWrite, this.Font, Brushes.Black, e.MarginBounds, StringFormat.GenericTypographic);
                 toWrite = toWrite.Substring(charactersOnPage);
@@ -96,7 +109,11 @@ namespace PDFGenerator2
         }
        
 
-
+        /// <summary>
+        /// Opens a Dialog box to select files for printing
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSelectFiles_Click(object sender, EventArgs e)
         {
             try
@@ -125,13 +142,11 @@ namespace PDFGenerator2
             
         }
 
-        
-
-        private void lstFiles_SelectedValueChanged(object sender, EventArgs e)
-        {
-            
-        }
-
+        /// <summary>
+        /// Allows you to save the name the PDF will have once it is printed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSaveFileName_Click(object sender, EventArgs e)
         {
 
@@ -161,6 +176,11 @@ namespace PDFGenerator2
             
         }
 
+        /// <summary>
+        /// Opens a dialog that allows you to select where the file are saved
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSelectSave_Click(object sender, EventArgs e)
         {
             try
@@ -181,6 +201,11 @@ namespace PDFGenerator2
             
         }
 
+        /// <summary>
+        /// Prints all documents selected to PDF
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnPrintToPDF_Click(object sender, EventArgs e)
         {
             try
@@ -227,10 +252,7 @@ namespace PDFGenerator2
                     }
                 }
 
-
-
                 files.Clear();
-
                 ResetListbox();
             }
             catch(Exception ex)
@@ -240,6 +262,11 @@ namespace PDFGenerator2
             
         }
 
+        /// <summary>
+        /// Drag Enter event for form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -252,6 +279,11 @@ namespace PDFGenerator2
             }
         }
 
+        /// <summary>
+        /// Drag Drop event for the form. Processes the file dragged onto the form so it can be printed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_DragDrop(object sender, DragEventArgs e)
         {
             string[] dropFiles = (string[])e.Data.GetData(DataFormats.FileDrop, false);

@@ -58,7 +58,6 @@
             this.lstFiles.Name = "lstFiles";
             this.lstFiles.Size = new System.Drawing.Size(280, 228);
             this.lstFiles.TabIndex = 1;
-            this.lstFiles.SelectedValueChanged += new System.EventHandler(this.lstFiles_SelectedValueChanged);
             // 
             // pnlNaming
             // 
